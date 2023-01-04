@@ -55,7 +55,8 @@ void Game::Initialize()
 void Game::Setup()
 {
 	playerPosition = {10., 20.};
-	playerVelocity = {1., 0};
+	playerVelocity = {100., 0};
+	millisecondsPreviousFrame = SDL_GetTicks();
 }
 
 void Game::Run()
@@ -92,7 +93,10 @@ void Game::ProcessInput()
 
 void Game::Update()
 {
-	playerPosition += playerVelocity;
+	float deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.f;
+
+	playerPosition += playerVelocity * deltaTime;
+	millisecondsPreviousFrame = SDL_GetTicks();
 }
 
 void Game::Render()
