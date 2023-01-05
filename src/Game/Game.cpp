@@ -9,7 +9,8 @@
 
 Game::Game()
 {
-	std::cout << "creating game instance" << std::endl;
+	Logger::Log("Creating game instance");
+	Logger::Err("This is a fake error");
 	isRunning = false;
 }
 
@@ -17,7 +18,7 @@ void Game::Initialize()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		std::cerr << "Error initializing SDL" << std::endl;
+		Logger::Err("Error initializing SDL");
 		return;
 	}
 
@@ -37,14 +38,14 @@ void Game::Initialize()
 
 	if (!window)
 	{
-		std::cerr << "Error creating window" << std::endl;
+		Logger::Err("Error creating window");
 		return;
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (!renderer)
 	{
-		std::cerr << "Error creating renderer" << std::endl;
+		Logger::Err("Error creating renderer");
 		return;
 	}
 
@@ -93,6 +94,11 @@ void Game::ProcessInput()
 
 void Game::Update()
 {
+	int currentTicks = SDL_GetTicks();
+	int timeToWait = MILLISECONDS_PER_FRAME - currentTicks + millisecondsPreviousFrame;
+	if (timeToWait > 0 && timeToWait < MILLISECONDS_PER_FRAME)
+		SDL_Delay(timeToWait);
+
 	float deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.f;
 
 	playerPosition += playerVelocity * deltaTime;
@@ -126,5 +132,5 @@ void Game::Destroy()
 
 Game::~Game()
 {
-	std::cout << "Destroying game instance" << std::endl;
+	Logger::Log("Destroying game instance");
 }

@@ -2,8 +2,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
-
-const int FPS = 500;
+#include "../Logger/Logger.h"
+const int FPS = 60;
 const int MILLISECONDS_PER_FRAME = 1000 / FPS;
 
 class Game
