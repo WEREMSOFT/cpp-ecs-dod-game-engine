@@ -15,9 +15,6 @@ private:
 	int windowWidth;
 	int windowHeight;
 
-	glm::vec2 playerPosition;
-	glm::vec2 playerVelocity;
-
 	int millisecondsPreviousFrame = 0;
 
 public:
