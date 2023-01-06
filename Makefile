@@ -2,7 +2,7 @@ COMPILER_FLAGS = -Wall -Wfatal-errors -O0 -g
 INCLUDE_PATH = -I"./libs"
 CC = g++
 LANG_STD = -std=c++17
-SRC_FILES = src/*.cpp src/Logger/*.cpp src/Game/*.cpp
+SRC_FILES = src/*.cpp src/Logger/*.cpp src/Game/*.cpp src/ECS/*.cpp
 LINKER_FLAGS = -lSDL2 -llua5.3 -lSDL2_ttf -lSDL2_mixer -lSDL2_image
 TARGET = bin/Main.bin
 build:
