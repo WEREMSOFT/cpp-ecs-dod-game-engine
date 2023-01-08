@@ -35,5 +35,31 @@ const Signature &System::GetComponentSignature() const
 	return componentSignature;
 }
 
-template <typename TCompnent>
-void RequireComponent();
+Entity Registry::CreateEntity()
+{
+	int entityId = numEntities++;
+
+	if (entityId >= entityComponentSignatures.size())
+	{
+		entityComponentSignatures.resize(entityId + 1);
+	}
+
+	Entity entity(entityId);
+	// entitiesToBeAdded.insert(entity);
+
+	Logger::Log("Entity created with id = " + std::to_string(entityId));
+
+	return entity;
+}
+
+
+
+void Registry::KillEntity(Entity entity)
+{
+	
+}
+
+void Registry::Update()
+{
+
+}
