@@ -12,6 +12,9 @@ Game::Game()
 	Logger::Log("Creating game instance");
 	Logger::Err("This is a fake error");
 	isRunning = false;
+
+	registry = std::make_unique<Registry>();
+
 }
 
 void Game::Initialize()
@@ -55,12 +58,9 @@ void Game::Initialize()
 
 void Game::Setup()
 {
-	// TODO:
-	// Entity tank = registry.CreateEntity();
-	// tank.AddComponent<TransfomrmComponent>();
-	// tank.AddComponent<BoxColliderComponent>();
-	// tank.AddComponent<SpriteComponent>("assets/images/tank.png");
 	millisecondsPreviousFrame = SDL_GetTicks();
+	Entity tank = registry->CreateEntity();
+	Entity truck = registry->CreateEntity();
 }
 
 void Game::Run()
