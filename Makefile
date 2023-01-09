@@ -12,4 +12,4 @@ run: build
 	./bin/Main.bin
 
 clean:
-	rm ./bin/Main.bin
+	rm ./bin/Main.bin -rf

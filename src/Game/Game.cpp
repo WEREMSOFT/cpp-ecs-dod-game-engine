@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 #include <sol/sol.hpp>
+#include "../Components/TransformComponent.h"
+#include "../Components/RigidBodyComponent.h"
 
 Game::Game()
 {
@@ -61,6 +63,9 @@ void Game::Setup()
 	millisecondsPreviousFrame = SDL_GetTicks();
 	Entity tank = registry->CreateEntity();
 	Entity truck = registry->CreateEntity();
+
+	registry->AddComponent<TransformComponent>(tank, glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
+	registry->AddComponent<RigidBodyComponent>(tank, glm::vec2(50., 50.));
 }
 
 void Game::Run()
