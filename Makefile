@@ -1,4 +1,4 @@
-COMPILER_FLAGS = -Wall -Wfatal-errors -O0 -g 
+COMPILER_FLAGS = -Wall -Wfatal-errors -O0 -DDEBUG=2 -g 
 INCLUDE_PATH = -I"./libs"
 CC = g++
 LANG_STD = -std=c++17

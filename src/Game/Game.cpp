@@ -8,6 +8,7 @@
 #include <sol/sol.hpp>
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Systems/MovementSystem.h"
 
 Game::Game()
 {
@@ -16,7 +17,6 @@ Game::Game()
 	isRunning = false;
 
 	registry = std::make_unique<Registry>();
-
 }
 
 void Game::Initialize()
@@ -60,12 +60,13 @@ void Game::Initialize()
 
 void Game::Setup()
 {
+	registry->AddSystem<MovementSystem>();
+
 	millisecondsPreviousFrame = SDL_GetTicks();
 	Entity tank = registry->CreateEntity();
-	Entity truck = registry->CreateEntity();
 
-	registry->AddComponent<TransformComponent>(tank, glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
-	registry->AddComponent<RigidBodyComponent>(tank, glm::vec2(50., 50.));
+	tank.AddComponent<TransformComponent>(glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(50., 50.));
 }
 
 void Game::Run()
@@ -108,13 +109,14 @@ void Game::Update()
 		SDL_Delay(timeToWait);
 
 	float deltaTime = (SDL_GetTicks() - millisecondsPreviousFrame) / 1000.f;
+	millisecondsPreviousFrame = SDL_GetTicks();
 
 	// TODO:
-	// MovementSystem.Update(deltaTime);
+	registry->GetSystem<MovementSystem>().Update();
 	// CollisionSystem.Update(deltaTime);
 	// DamageSystem.Update(deltaTime);
 
-	millisecondsPreviousFrame = SDL_GetTicks();
+	registry->Update();
 }
 
 void Game::Render()
