@@ -112,7 +112,7 @@ void Game::Update()
 	millisecondsPreviousFrame = SDL_GetTicks();
 
 	// TODO:
-	registry->GetSystem<MovementSystem>().Update();
+	registry->GetSystem<MovementSystem>().Update(deltaTime);
 	// CollisionSystem.Update(deltaTime);
 	// DamageSystem.Update(deltaTime);
 
