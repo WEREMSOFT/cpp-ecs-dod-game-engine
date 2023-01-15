@@ -6,9 +6,13 @@
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 #include <sol/sol.hpp>
+
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Components/SpriteComponent.h"
+
 #include "../Systems/MovementSystem.h"
+#include "../Systems/RenderSystem.h"
 
 Game::Game()
 {
@@ -61,12 +65,14 @@ void Game::Initialize()
 void Game::Setup()
 {
 	registry->AddSystem<MovementSystem>();
+	registry->AddSystem<RenderSystem>();
 
 	millisecondsPreviousFrame = SDL_GetTicks();
 	Entity tank = registry->CreateEntity();
 
 	tank.AddComponent<TransformComponent>(glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(50., 50.));
+	tank.AddComponent<SpriteComponent>(10, 10);
 }
 
 void Game::Run()
@@ -123,7 +129,10 @@ void Game::Render()
 {
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
-	// TODO: Render Game Objects
+	
+	// Call all the systems that requires an object
+	registry->GetSystem<RenderSystem>().Update(renderer);
+
 	SDL_RenderPresent(renderer);
 }
 
