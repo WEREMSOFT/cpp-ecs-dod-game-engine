@@ -24,8 +24,6 @@ public:
 			const auto rigidbody = entity.GetComponent<RigidBodyComponent>();
 			transform.position.x += rigidbody.velocity.x * deltaTime;
 			transform.position.y += rigidbody.velocity.y * deltaTime;
-
-			Logger::Log("Entity " + std::to_string(entity.GetId()) + " position is now (" + std::to_string(transform.position.x) + ", " + std::to_string(transform.position.y) + ")");
 		}
 
 	}

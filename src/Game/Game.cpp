@@ -21,6 +21,7 @@ Game::Game()
 	isRunning = false;
 
 	registry = std::make_unique<Registry>();
+	assetStore = std::make_unique<AssetStore>();
 }
 
 void Game::Initialize()
@@ -67,12 +68,21 @@ void Game::Setup()
 	registry->AddSystem<MovementSystem>();
 	registry->AddSystem<RenderSystem>();
 
+	// Add assets to the asset store
+	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
+	assetStore->AddTexture(renderer, "truck-image", "./assets/images/truck-ford-right.png");
+
 	millisecondsPreviousFrame = SDL_GetTicks();
 	Entity tank = registry->CreateEntity();
 
 	tank.AddComponent<TransformComponent>(glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(50., 50.));
-	tank.AddComponent<SpriteComponent>(10, 10);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(40., 0.));
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32);
+	
+	Entity truck = registry->CreateEntity();
+	truck.AddComponent<TransformComponent>(glm::vec2(50., 100.), glm::vec2(1., 1.), 0.);
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(0., 50.));
+	truck.AddComponent<SpriteComponent>("truck-image", 32, 32);
 }
 
 void Game::Run()
@@ -131,7 +141,7 @@ void Game::Render()
 	SDL_RenderClear(renderer);
 	
 	// Call all the systems that requires an object
-	registry->GetSystem<RenderSystem>().Update(renderer);
+	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
 
 	SDL_RenderPresent(renderer);
 }

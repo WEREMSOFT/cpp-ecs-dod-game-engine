@@ -5,6 +5,7 @@
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/SpriteComponent.h"
+#include "../AssetStore/AssetStore.h"
 #include <SDL2/SDL.h>
 
 class RenderSystem : public System
@@ -16,25 +17,26 @@ public:
 		RequireComponent<TransformComponent>();
 	}
 
-	void Update(SDL_Renderer* renderer) const
+	void Update(SDL_Renderer *renderer, std::unique_ptr<AssetStore>& assetStore) const
 	{
 
 		for (auto entity : GetSystemEntities())
 		{
-			const auto transform = entity.GetComponent<TransformComponent>();
+			const auto transformComponent = entity.GetComponent<TransformComponent>();
 			const auto spriteComponent = entity.GetComponent<SpriteComponent>();
-			
-			SDL_Rect objRect = {
-				static_cast<int>(transform.position.x),
-				static_cast<int>(transform.position.y),
-				spriteComponent.width,
-				spriteComponent.height
-			};
 
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-			SDL_RenderFillRect(renderer, &objRect);
+			SDL_Texture* texture = assetStore->GetTexture(spriteComponent.assetId);
 
-			Logger::Log("Entity " + std::to_string(entity.GetId()) + " position is now (" + std::to_string(transform.position.x) + ", " + std::to_string(transform.position.y) + ")");
+
+			SDL_Rect srcRect = spriteComponent.srcRect;
+
+			SDL_Rect destRect = {
+				static_cast<int>(transformComponent.position.x),
+				static_cast<int>(transformComponent.position.y),
+				static_cast<int>(spriteComponent.width * transformComponent.scale.x),
+				static_cast<int>(spriteComponent.height * transformComponent.scale.y)};
+
+			SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, transformComponent.rotation, NULL, SDL_FLIP_NONE);
 		}
 	}
 };
