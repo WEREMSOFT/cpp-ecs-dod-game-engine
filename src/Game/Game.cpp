@@ -63,7 +63,7 @@ void Game::Initialize()
 	isRunning = true;
 }
 
-void Game::Setup()
+void Game::LoadLevel(int level)
 {
 	registry->AddSystem<MovementSystem>();
 	registry->AddSystem<RenderSystem>();
@@ -83,6 +83,11 @@ void Game::Setup()
 	truck.AddComponent<TransformComponent>(glm::vec2(50., 100.), glm::vec2(1., 1.), 0.);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(0., 50.));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32);
+}
+
+void Game::Setup()
+{
+	LoadLevel(1);
 }
 
 void Game::Run()

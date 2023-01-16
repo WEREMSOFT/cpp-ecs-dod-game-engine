@@ -34,4 +34,5 @@ public:
 	void ProcessInput();
 	void Render();
 	void Destroy();
+	void LoadLevel(int level);
 };
