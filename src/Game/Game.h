@@ -24,6 +24,8 @@ private:
 
 	int millisecondsPreviousFrame = 0;
 
+	std::vector<std::vector<int>> LoadTileMap();
+
 public:
 	Game();
 	~Game();

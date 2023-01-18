@@ -8,8 +8,12 @@ TARGET = bin/Main.bin
 build:
 	$(CC) $(COMPILER_FLAGS) $(INCLUDE_PATH) $(LANG_STD) $(SRC_FILES) $(LINKER_FLAGS) -o $(TARGET)
 
-run: build
+run: build copy_assets
 	./bin/Main.bin
+
+copy_assets:
+	@cp -rf ./assets ./bin/assets
 
 clean:
 	rm ./bin/Main.bin -rf
+	rm ./bin/assets -rf

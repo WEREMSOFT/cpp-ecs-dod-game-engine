@@ -6,6 +6,9 @@
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 #include <sol/sol.hpp>
+#include <string>
+
+#include <stdio.h>
 
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
@@ -63,6 +66,50 @@ void Game::Initialize()
 	isRunning = true;
 }
 
+std::vector<int> split(std::string stringToSplit)
+{
+	auto size = stringToSplit.size();
+	char* buffer = new char[size + 1];
+	memcpy(buffer, stringToSplit.c_str(), size + 1);
+	char* token = strtok(buffer, ",");
+	std::vector<int> returnValue;
+	auto lineContent = std::string(buffer);
+	while(token != NULL)
+	{
+		returnValue.emplace_back(atoi(token));
+		token = strtok(NULL, ",\n");
+	}
+
+	delete buffer;
+	return returnValue;
+}
+
+std::vector<std::vector<int>> Game::LoadTileMap()
+{
+	std::vector<std::vector<int>> returnValue;
+	// TODO
+	assetStore->AddTexture(renderer, "jungle-image", "./assets/tilemaps/jungle.png");
+
+	FILE* fp = fopen("./assets/tilemaps/jungle.map", "r");
+
+	if(fp == NULL)
+	{
+		Logger::Err(std::string("Errror al abrir archivo ") + std::string("./assets/tilemaps/jungle.map"));
+		exit(-1);
+	}
+
+	char lineContents[100] = { 0 };
+
+	while(fgets(lineContents, 100, fp))
+	{
+		returnValue.push_back(split(std::string(lineContents)));
+	}
+
+	fclose(fp);
+
+	return returnValue;
+}
+
 void Game::LoadLevel(int level)
 {
 	registry->AddSystem<MovementSystem>();
@@ -71,6 +118,30 @@ void Game::LoadLevel(int level)
 	// Add assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	assetStore->AddTexture(renderer, "truck-image", "./assets/images/truck-ford-right.png");
+
+	auto currentMap = LoadTileMap();
+	
+
+
+	double scale = .5;
+
+	int y = 0;
+
+	for(auto vec: currentMap)
+	{
+		int x = 0;
+		for(auto currentTile: vec)
+		{
+			auto srcRect = SDL_Rect{(currentTile % 10) * 32, (currentTile / 10) * 32, 32, 32};
+			SDL_Rect destRect = {x * 32, y * 32, 32, 32};
+			Entity tile = registry->CreateEntity();
+			tile.AddComponent<TransformComponent>(glm::vec2(destRect.x * scale, destRect.y * scale), glm::vec2(scale, scale));
+			tile.AddComponent<SpriteComponent>("jungle-image", 32, 32, srcRect.x, srcRect.y);
+			x++;
+		}
+		y++;
+	}
+
 
 	millisecondsPreviousFrame = SDL_GetTicks();
 	Entity tank = registry->CreateEntity();
@@ -144,7 +215,6 @@ void Game::Render()
 {
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
-	
 	// Call all the systems that requires an object
 	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
 
