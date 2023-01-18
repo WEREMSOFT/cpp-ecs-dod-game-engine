@@ -136,7 +136,7 @@ void Game::LoadLevel(int level)
 			SDL_Rect destRect = {x * 32, y * 32, 32, 32};
 			Entity tile = registry->CreateEntity();
 			tile.AddComponent<TransformComponent>(glm::vec2(destRect.x * scale, destRect.y * scale), glm::vec2(scale, scale));
-			tile.AddComponent<SpriteComponent>("jungle-image", 32, 32, srcRect.x, srcRect.y);
+			tile.AddComponent<SpriteComponent>("jungle-image", 32, 32, 0, srcRect.x, srcRect.y);
 			x++;
 		}
 		y++;
@@ -148,12 +148,12 @@ void Game::LoadLevel(int level)
 
 	tank.AddComponent<TransformComponent>(glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(40., 0.));
-	tank.AddComponent<SpriteComponent>("tank-image", 32, 32);
+	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 2);
 	
 	Entity truck = registry->CreateEntity();
-	truck.AddComponent<TransformComponent>(glm::vec2(50., 100.), glm::vec2(1., 1.), 0.);
-	truck.AddComponent<RigidBodyComponent>(glm::vec2(0., 50.));
-	truck.AddComponent<SpriteComponent>("truck-image", 32, 32);
+	truck.AddComponent<TransformComponent>(glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
+	truck.AddComponent<RigidBodyComponent>(glm::vec2(44., 0.));
+	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 1);
 }
 
 void Game::Setup()
