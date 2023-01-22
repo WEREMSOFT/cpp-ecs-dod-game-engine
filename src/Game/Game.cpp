@@ -164,7 +164,7 @@ void Game::LoadLevel(int level)
 	chopper.AddComponent<AnimationComponent>(2, 7);
 
 	Entity radar = registry->CreateEntity();
-	radar.AddComponent<TransformComponent>(glm::vec2(500., 500.), glm::vec2(1., 1.));
+	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10), glm::vec2(1., 1.));
 	radar.AddComponent<RigidBodyComponent>(glm::vec2(0., 0.));
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 13);
 	radar.AddComponent<AnimationComponent>(8, 15, true);
