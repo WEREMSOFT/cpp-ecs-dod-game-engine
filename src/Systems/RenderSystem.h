@@ -8,11 +8,15 @@
 #include "../AssetStore/AssetStore.h"
 #include <SDL2/SDL.h>
 
+#include "../Game/ObjectNames.h"
+
 class RenderSystem : public System
 {
 public:
+
 	RenderSystem()
 	{
+		name = RENDER_SYSTEM;
 		RequireComponent<SpriteComponent>();
 		RequireComponent<TransformComponent>();
 	}
@@ -36,7 +40,8 @@ public:
 			renderableEntities.emplace_back(re);
 		}
 
-		std::sort(renderableEntities.begin(), renderableEntities.end(), [](const RenderableEntity& a, const RenderableEntity& b) 
+		std::sort(renderableEntities.begin(), renderableEntities.end(), 
+		[](const RenderableEntity& a, const RenderableEntity& b) 
 		{   
 			return (a.spriteComponent.zIndex < b.spriteComponent.zIndex);
 		});

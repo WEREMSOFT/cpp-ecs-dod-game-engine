@@ -11,6 +11,7 @@ class MovementSystem : public System
 public:
 
 	MovementSystem() {
+		name = MOVEMENT_SYSTEM;
 		RequireComponent<TransformComponent>();
 		RequireComponent<RigidBodyComponent>();
 	}

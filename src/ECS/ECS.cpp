@@ -15,7 +15,7 @@ void System::AddEntityToSystem(Entity entity)
 void Registry::AddEntityToSystems(Entity entity)
 {
 	const auto entityId = entity.GetId();
-	const auto entityComponentSignature = entityComponentSignatures[entityId];
+	const auto& entityComponentSignature = entityComponentSignatures[entityId];
 
 	for (auto &system : systems)
 	{

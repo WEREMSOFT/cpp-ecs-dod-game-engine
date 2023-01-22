@@ -7,6 +7,7 @@
 #include <set>
 #include <memory>
 #include "../Logger/Logger.h"
+#include "../Game/ObjectNames.h"
 
 const unsigned int MAX_COMPONENTS = 32;
 typedef std::bitset<MAX_COMPONENTS> Signature;
@@ -34,6 +35,7 @@ private:
 	int id;
 
 public:
+	ObjectNames name = TILE_ENTITY;
 	Entity(int id) : id(id){};
 	int GetId() const;
 
@@ -59,6 +61,8 @@ private:
 	std::vector<Entity> entities;
 
 public:
+	ObjectNames name = UNKNOWN;
+
 	System() = default;
 	~System() = default;
 
@@ -205,7 +209,7 @@ void Registry::AddComponent(Entity entity, TArgs &&...args)
 	TComponent newComponent(std::forward<TArgs>(args)...);
 
 	componentPool->Set(entityId, newComponent);
-	entityComponentSignatures[entityId].set();
+	entityComponentSignatures[entityId].set(componentId);
 	Logger::Log("component id " + std::to_string(componentId) + " was added to the entity id " + std::to_string(entityId));
 	Logger::Log("END: component pools size " + std::to_string(componentPool->GetSize()));
 
