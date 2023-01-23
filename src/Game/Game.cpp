@@ -14,10 +14,12 @@
 #include "../Components/RigidBodyComponent.h"
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
+#include "../Components/BoxColliderComponent.h"
 
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/AnimationSystem.h"
+#include "../Systems/CollisionSystem.h"
 
 Game::Game()
 {
@@ -117,6 +119,7 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<MovementSystem>();
 	registry->AddSystem<RenderSystem>();
 	registry->AddSystem<AnimationSystem>();
+	registry->AddSystem<CollisionSystem>();
 
 	// Add assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -148,19 +151,21 @@ void Game::LoadLevel(int level)
 
 	millisecondsPreviousFrame = SDL_GetTicks();
 	Entity tank = registry->CreateEntity();
-	tank.AddComponent<TransformComponent>(glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(40., 0.));
+	tank.AddComponent<TransformComponent>(glm::vec2(200., 50.), glm::vec2(1., 1.), 0.);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(-40., 0.));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
+	tank.AddComponent<BoxColliderComponent>(32, 32);
 	
 	Entity truck = registry->CreateEntity();
-	truck.AddComponent<TransformComponent>(glm::vec2(10., 30.), glm::vec2(1., 1.), 0.);
+	truck.AddComponent<TransformComponent>(glm::vec2(10., 50.), glm::vec2(1., 1.), 0.);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(44., 0.));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
+	truck.AddComponent<BoxColliderComponent>(32, 32);
 
 	Entity chopper = registry->CreateEntity();
 	chopper.AddComponent<TransformComponent>();
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0., 0.));
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
 	chopper.AddComponent<AnimationComponent>(2, 7);
 
 	Entity radar = registry->CreateEntity();
@@ -220,6 +225,7 @@ void Game::Update()
 	// TODO:
 	registry->GetSystem<MovementSystem>().Update(deltaTime);
 	registry->GetSystem<AnimationSystem>().Update();
+	registry->GetSystem<CollisionSystem>().Update();
 
 	registry->Update();
 }
