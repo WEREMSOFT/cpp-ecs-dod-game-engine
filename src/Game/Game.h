@@ -18,6 +18,7 @@ private:
 	std::unique_ptr<Registry> registry;
 	std::unique_ptr<AssetStore> assetStore;
 
+	bool isDebugMode;
 	bool isRunning;
 	int windowWidth;
 	int windowHeight;

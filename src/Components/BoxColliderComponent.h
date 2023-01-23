@@ -7,6 +7,7 @@ struct BoxColliderComponent
 	int with;
 	int height;
 	glm::vec2 offset;
+	bool isColliding = false;
 
 	BoxColliderComponent(int with = 0, int height = 0, glm::vec2 offset = glm::vec2(0))
 	{

@@ -35,7 +35,7 @@ class CollisionSystem: public System
 		{
 			auto a = *i;
 			auto transformA = a.GetComponent<TransformComponent>();
-			auto collisionA = a.GetComponent<BoxColliderComponent>();
+			auto& collisionA = a.GetComponent<BoxColliderComponent>();
 			for(auto j = i; j != entities.end(); j++)
 			{
 				auto b = *j;
@@ -44,9 +44,12 @@ class CollisionSystem: public System
 					continue;
 
 				auto transformB = b.GetComponent<TransformComponent>();
-				auto collisionB = b.GetComponent<BoxColliderComponent>();
+				auto& collisionB = b.GetComponent<BoxColliderComponent>();
 
 				bool collisionHappened = CheckAABBCollision(transformA, collisionA, transformB, collisionB);
+
+				collisionA.isColliding = collisionHappened;
+				collisionB.isColliding = collisionHappened;
 
 				if(collisionHappened)
 				{

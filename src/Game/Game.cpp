@@ -20,12 +20,14 @@
 #include "../Systems/RenderSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionSystem.h"
+#include "../Systems/DebugRenderSystem.h"
 
 Game::Game()
 {
 	Logger::Log("Creating game instance");
 	Logger::Err("This is a fake error");
 	isRunning = false;
+	isDebugMode = false;
 
 	registry = std::make_unique<Registry>();
 	assetStore = std::make_unique<AssetStore>();
@@ -78,6 +80,7 @@ std::vector<int> split(std::string stringToSplit)
 	char* token = strtok(buffer, ",");
 	std::vector<int> returnValue;
 	auto lineContent = std::string(buffer);
+
 	while(token != NULL)
 	{
 		returnValue.emplace_back(atoi(token));
@@ -91,7 +94,6 @@ std::vector<int> split(std::string stringToSplit)
 std::vector<std::vector<int>> Game::LoadTileMap()
 {
 	std::vector<std::vector<int>> returnValue;
-	// TODO
 	assetStore->AddTexture(renderer, "jungle-image", "./assets/tilemaps/jungle.png");
 
 	FILE* fp = fopen("./assets/tilemaps/jungle.map", "r");
@@ -120,6 +122,7 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<RenderSystem>();
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>();
+	registry->AddSystem<DebugRenderSystem>();
 
 	// Add assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -207,6 +210,10 @@ void Game::ProcessInput()
 			{
 				isRunning = false;
 			}
+			if (event.key.keysym.sym == SDLK_d)
+			{
+				isDebugMode = !isDebugMode;
+			}
 			break;
 		}
 	}
@@ -236,6 +243,9 @@ void Game::Render()
 	SDL_RenderClear(renderer);
 	// Call all the systems that requires an object
 	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	
+	if(isDebugMode)
+		registry->GetSystem<DebugRenderSystem>().Update(renderer);
 
 	SDL_RenderPresent(renderer);
 }
