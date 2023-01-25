@@ -6,6 +6,7 @@
 #include <typeindex>
 #include <set>
 #include <memory>
+#include <deque>
 #include "../Logger/Logger.h"
 #include "../Game/ObjectNames.h"
 
@@ -38,6 +39,7 @@ public:
 	ObjectNames name = TILE_ENTITY;
 	Entity(int id) : id(id){};
 	int GetId() const;
+	void Kill();
 
 	template <typename TComponent, typename... TArgs> void AddComponent(TArgs &&...args);
 	template <typename TComponent> void RemoveComponent();
@@ -113,6 +115,8 @@ private:
 	std::vector<std::shared_ptr<IPool>> componentPools;
 
 	std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
+	// list of free entities ID's
+	std::deque<int> freeIds;
 
 public:
 	Registry() 
@@ -130,6 +134,7 @@ public:
 	void KillEntity(Entity entity);
 
 	void AddEntityToSystems(Entity entity);
+	void RemoveEntityFromSystems(Entity entity);
 
 	template <typename T, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
 	template <typename T> void RemoveComponent(Entity entity);

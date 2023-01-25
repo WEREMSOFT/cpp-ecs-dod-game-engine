@@ -1,10 +1,16 @@
 #include "ECS.h"
+#include <algorithm>
 
 int IComponent::nextId = 0;
 
 int Entity::GetId() const
 {
 	return id;
+}
+
+void Entity::Kill()
+{
+	registry->KillEntity(*this);
 }
 
 void System::AddEntityToSystem(Entity entity)
@@ -32,18 +38,22 @@ void Registry::AddEntityToSystems(Entity entity)
 
 void System::RemoveEntitiyFromSystem(Entity entity)
 {
-	int entityIndex = -1;
-	for (auto &e : entities)
-	{
-		entityIndex++;
-		if (e.GetId() == entity.GetId())
-		{
-			break;
-		}
-	}
+    entities.erase(std::remove_if(entities.begin(), entities.end(), [&entity](Entity other) {
+        return entity == other;
+    }), entities.end());
 
-	if (entityIndex > -1)
-		entities.erase(entities.begin() + entityIndex);
+	// int entityIndex = -1;
+	// for (auto &e : entities)
+	// {
+	// 	entityIndex++;
+	// 	if (e.GetId() == entity.GetId())
+	// 	{
+	// 		break;
+	// 	}
+	// }
+
+	// if (entityIndex > -1)
+	// 	entities.erase(entities.begin() + entityIndex);
 }
 
 std::vector<Entity> System::GetSystemEntities() const
@@ -57,27 +67,40 @@ const Signature &System::GetComponentSignature() const
 
 Entity Registry::CreateEntity()
 {
-	int entityId = numEntities++;
+	int entityId;
+	
+	if(freeIds.empty())
+	{
+		entityId = numEntities++;
+		if (entityId >= static_cast<int>(entityComponentSignatures.size()))
+		{
+			entityComponentSignatures.resize(entityId + 1);
+		}
+	} else {
+		entityId = freeIds.front();
+		freeIds.pop_front();
+	}
+	
 	Entity entity(entityId);
 	entity.registry = this;
 	entitiesToBeAdded.insert(entity);
-
-	if (entityId >= static_cast<int>(entityComponentSignatures.size()))
-	{
-		entityComponentSignatures.resize(entityId + 1);
-	}
 	
 	Logger::Log("Entity created with id = " + std::to_string(entityId));
-
 
 	return entity;
 }
 
-
+void Registry::RemoveEntityFromSystems(Entity entity)
+{
+	for(auto system: systems)
+	{
+		system.second->RemoveEntitiyFromSystem(entity);
+	}
+}
 
 void Registry::KillEntity(Entity entity)
 {
-	
+	entitiesToBeRemoved.insert(entity);
 }
 
 void Registry::Update()
@@ -88,4 +111,13 @@ void Registry::Update()
 	}
 
 	entitiesToBeAdded.clear();
+
+	for (auto entity: entitiesToBeRemoved)
+	{
+		RemoveEntityFromSystems(entity);
+		entityComponentSignatures[entity.GetId()].reset();
+		freeIds.push_back(entity.GetId());
+	}
+
+	entitiesToBeRemoved.clear();
 }

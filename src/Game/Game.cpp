@@ -158,7 +158,7 @@ void Game::LoadLevel(int level)
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(-40., 0.));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-	
+
 	Entity truck = registry->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10., 50.), glm::vec2(1., 1.), 0.);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(44., 0.));
