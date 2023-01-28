@@ -2,6 +2,7 @@
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/BoxColliderComponent.h"
+#include "../Events/CollisionEvent.h"
 
 class CollisionSystem: public System
 {
@@ -27,7 +28,7 @@ class CollisionSystem: public System
 		return false;
 	}
 
-	void Update()
+	void Update(std::unique_ptr<EventBus>& eventBus)
 	{
 		auto entities = GetSystemEntities();
 
@@ -45,7 +46,6 @@ class CollisionSystem: public System
 
 				auto transformB = b.GetComponent<TransformComponent>();
 				auto& collisionB = b.GetComponent<BoxColliderComponent>();
-
 				bool collisionHappened = CheckAABBCollision(transformA, collisionA, transformB, collisionB);
 
 				collisionA.isColliding = collisionHappened;
@@ -54,8 +54,7 @@ class CollisionSystem: public System
 				if(collisionHappened)
 				{
 					Logger::Log("Entity " + std::to_string(a.GetId()) + " collided with entity " + std::to_string(b.GetId()) );
-					a.Kill();
-					b.Kill();
+					eventBus->EmitEvent<CollisionEvent>(a, b);
 				}
 			}
 		}

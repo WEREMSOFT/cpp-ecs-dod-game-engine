@@ -5,6 +5,7 @@
 #include "../ECS/ECS.h"
 #include "../Logger/Logger.h"
 #include "../AssetStore/AssetStore.h"
+#include "../EventBus/EventBus.h"
 
 const int FPS = 60;
 const int MILLISECONDS_PER_FRAME = 1000 / FPS;
@@ -17,12 +18,13 @@ private:
 
 	std::unique_ptr<Registry> registry;
 	std::unique_ptr<AssetStore> assetStore;
+	std::unique_ptr<EventBus> eventBus;
 
 	bool isDebugMode;
 	bool isRunning;
+
 	int windowWidth;
 	int windowHeight;
-
 	int millisecondsPreviousFrame = 0;
 
 	std::vector<std::vector<int>> LoadTileMap();
