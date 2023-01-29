@@ -15,6 +15,8 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/KeyboardControllerComponent.h"
+#include "../Components/CameraFollowComponent.h"
 
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -22,6 +24,17 @@
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/DebugRenderSystem.h"
 #include "../Systems/DamageSystem.h"
+#include "../Systems/KeyboardControllerSystem.h"
+#include "../Systems/CameraMovementSystem.h"
+
+#include "../EventBus/EventBus.h"
+#include "../Events/KeyPressedEvent.h"
+
+
+int Game::windowWidth;
+int Game::windowHeight;
+int Game::mapWidth;
+int Game::mapHeight;
 
 Game::Game()
 {
@@ -50,6 +63,7 @@ void Game::Initialize()
 	windowWidth = 800;	// displayMode.w;
 	windowHeight = 600; // displayMode.h;
 
+
 	window = SDL_CreateWindow(
 		NULL,
 		SDL_WINDOWPOS_CENTERED,
@@ -71,6 +85,7 @@ void Game::Initialize()
 		return;
 	}
 
+	camera = {0, 0, windowWidth, windowHeight};
 	// SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 	isRunning = true;
 }
@@ -127,16 +142,18 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<CollisionSystem>();
 	registry->AddSystem<DebugRenderSystem>();
 	registry->AddSystem<DamageSystem>();
+	registry->AddSystem<KeyboardControllerSystem>();
+	registry->AddSystem<CameraMovementSystem>();
 
 	// Add assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	assetStore->AddTexture(renderer, "truck-image", "./assets/images/truck-ford-right.png");
-	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper.png");
+	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	assetStore->AddTexture(renderer, "radar-image", "./assets/images/radar.png");
 
 	auto currentMap = LoadTileMap();
 
-	double scale = 1.;
+	double scale = 2.;
 
 	int y = 0;
 
@@ -174,6 +191,16 @@ void Game::LoadLevel(int level)
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
 	chopper.AddComponent<AnimationComponent>(2, 7);
+	chopper.AddComponent<CameraFollowComponent>();
+	
+	{
+		int velocity = 80;
+		chopper.AddComponent<KeyboardControllerComponent>(
+			glm::vec2( 0, -velocity),
+			glm::vec2( velocity, 0),
+			glm::vec2(   0, velocity),
+			glm::vec2(-velocity, 0));
+	}
 
 	Entity radar = registry->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10), glm::vec2(1., 1.));
@@ -210,13 +237,17 @@ void Game::ProcessInput()
 			isRunning = false;
 			break;
 		case SDL_KEYDOWN:
+			eventBus->EmitEvent<KeyPressedEvent>(event.key.keysym.sym);
+			
 			if (event.key.keysym.sym == SDLK_ESCAPE)
 			{
 				isRunning = false;
+				break;
 			}
 			if (event.key.keysym.sym == SDLK_d)
 			{
 				isDebugMode = !isDebugMode;
+				break;
 			}
 			break;
 		}
@@ -225,6 +256,8 @@ void Game::ProcessInput()
 
 void Game::Update()
 {
+	Logger::Log("Camera position: " + std::to_string(camera.x) + " - " + std::to_string(camera.y));
+
 	int currentTicks = SDL_GetTicks();
 	int timeToWait = MILLISECONDS_PER_FRAME - currentTicks + millisecondsPreviousFrame;
 	if (timeToWait > 0 && timeToWait < MILLISECONDS_PER_FRAME)
@@ -238,13 +271,14 @@ void Game::Update()
 
 	// Perform the subscription of events for all systems
 	registry->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
+	registry->GetSystem<KeyboardControllerSystem>().SubscribeToEvents(eventBus);
 	
 	registry->Update();
 
-	// TODO:
 	registry->GetSystem<MovementSystem>().Update(deltaTime);
 	registry->GetSystem<AnimationSystem>().Update();
 	registry->GetSystem<CollisionSystem>().Update(eventBus);
+	registry->GetSystem<CameraMovementSystem>().Update(camera);
 }
 
 void Game::Render()
@@ -252,7 +286,7 @@ void Game::Render()
 	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
 	// Call all the systems that requires an object
-	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
 	
 	if(isDebugMode)
 		registry->GetSystem<DebugRenderSystem>().Update(renderer);

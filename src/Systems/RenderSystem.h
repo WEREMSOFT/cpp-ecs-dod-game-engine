@@ -21,7 +21,7 @@ public:
 		RequireComponent<TransformComponent>();
 	}
 
-	void Update(SDL_Renderer *renderer, std::unique_ptr<AssetStore>& assetStore) const
+	void Update(SDL_Renderer *renderer, std::unique_ptr<AssetStore>& assetStore, SDL_Rect& camera) const
 	{
 		struct RenderableEntity {
 			TransformComponent transformComponent;
@@ -56,8 +56,8 @@ public:
 			SDL_Rect srcRect = spriteComponent.srcRect;
 
 			SDL_Rect destRect = {
-				static_cast<int>(transformComponent.position.x),
-				static_cast<int>(transformComponent.position.y),
+				static_cast<int>(transformComponent.position.x - camera.x),
+				static_cast<int>(transformComponent.position.y - camera.y),
 				static_cast<int>(spriteComponent.width * transformComponent.scale.x),
 				static_cast<int>(spriteComponent.height * transformComponent.scale.y)};
 

@@ -20,11 +20,16 @@ private:
 	std::unique_ptr<AssetStore> assetStore;
 	std::unique_ptr<EventBus> eventBus;
 
+
+	SDL_Rect camera;
 	bool isDebugMode;
 	bool isRunning;
 
-	int windowWidth;
-	int windowHeight;
+	static int windowWidth;
+	static int windowHeight;
+	static int mapWidth;
+	static int mapHeight;
+
 	int millisecondsPreviousFrame = 0;
 
 	std::vector<std::vector<int>> LoadTileMap();
