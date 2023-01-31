@@ -156,10 +156,11 @@ void Game::LoadLevel(int level)
 	double scale = 2.;
 
 	int y = 0;
-
+	int x = 0;
+	
 	for(auto vec: currentMap)
 	{
-		int x = 0;
+		x = 0;
 		for(auto currentTile: vec)
 		{
 			auto srcRect = SDL_Rect{(currentTile % 10) * 32, (currentTile / 10) * 32, 32, 32};
@@ -171,6 +172,9 @@ void Game::LoadLevel(int level)
 		}
 		y++;
 	}
+
+	mapWidth = x * 32 * scale;
+	mapHeight = y * 32 * scale;
 
 
 	millisecondsPreviousFrame = SDL_GetTicks();

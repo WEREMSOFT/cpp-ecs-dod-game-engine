@@ -25,16 +25,17 @@ private:
 	bool isDebugMode;
 	bool isRunning;
 
-	static int windowWidth;
-	static int windowHeight;
-	static int mapWidth;
-	static int mapHeight;
 
 	int millisecondsPreviousFrame = 0;
 
 	std::vector<std::vector<int>> LoadTileMap();
 
 public:
+	static int windowWidth;
+	static int windowHeight;
+	static int mapWidth;
+	static int mapHeight;
+
 	Game();
 	~Game();
 	void Initialize();
