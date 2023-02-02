@@ -14,7 +14,7 @@ public:
 		RequireComponent<BoxColliderComponent>();
 	}
 
-	void Update(SDL_Renderer* renderer)
+	void Update(SDL_Renderer* renderer, SDL_Rect& camera)
 	{
 		auto entities = GetSystemEntities();
 
@@ -29,8 +29,8 @@ public:
 				SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
 
 			SDL_Rect rect = { 
-								static_cast<int>(tComponent.position.x + cComponent.offset.x), 
-								static_cast<int>(tComponent.position.y + cComponent.offset.y),
+								static_cast<int>(tComponent.position.x - camera.x + cComponent.offset.x), 
+								static_cast<int>(tComponent.position.y - camera.y + cComponent.offset.y),
 								cComponent.with,
 								cComponent.height 
 							};

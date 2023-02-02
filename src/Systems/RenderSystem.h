@@ -56,8 +56,8 @@ public:
 			SDL_Rect srcRect = spriteComponent.srcRect;
 
 			SDL_Rect destRect = {
-				static_cast<int>(transformComponent.position.x - camera.x),
-				static_cast<int>(transformComponent.position.y - camera.y),
+				static_cast<int>(transformComponent.position.x - (spriteComponent.isFixed ? 0 : camera.x)),
+				static_cast<int>(transformComponent.position.y - (spriteComponent.isFixed ? 0 : camera.y)),
 				static_cast<int>(spriteComponent.width * transformComponent.scale.x),
 				static_cast<int>(spriteComponent.height * transformComponent.scale.y)};
 
