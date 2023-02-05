@@ -192,13 +192,17 @@ void Game::LoadLevel(int level)
 	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 1000, 5000, 0, false);
 	tank.AddComponent<HealthComponent>(100);
 
+	tank.Group("enemies");
+
 	Entity truck = registry->CreateEntity();
 	truck.AddComponent<TransformComponent>(glm::vec2(10., 50.), glm::vec2(1., 1.), 0.);
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
-	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0, 100), 1000, 5000, 0, false);
+	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0, 100), 1000, 2000, 0, false);
 	truck.AddComponent<HealthComponent>(100);
+
+	truck.Group("enemies");
 
 	Entity chopper = registry->CreateEntity();
 	chopper.AddComponent<TransformComponent>();
@@ -207,6 +211,7 @@ void Game::LoadLevel(int level)
 	chopper.AddComponent<AnimationComponent>(2, 7);
 	chopper.AddComponent<CameraFollowComponent>();
 	chopper.AddComponent<HealthComponent>(100);
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200, 200), 0, 2000, 0, true);
 	
 	{
 		int velocity = 80;
@@ -216,6 +221,8 @@ void Game::LoadLevel(int level)
 			glm::vec2(   0, velocity),
 			glm::vec2(-velocity, 0));
 	}
+
+	chopper.Tag("player");
 
 	Entity radar = registry->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10), glm::vec2(1., 1.));
@@ -271,8 +278,6 @@ void Game::ProcessInput()
 
 void Game::Update()
 {
-	Logger::Log("Camera position: " + std::to_string(camera.x) + " - " + std::to_string(camera.y));
-
 	int currentTicks = SDL_GetTicks();
 	int timeToWait = MILLISECONDS_PER_FRAME - currentTicks + millisecondsPreviousFrame;
 	if (timeToWait > 0 && timeToWait < MILLISECONDS_PER_FRAME)
@@ -287,6 +292,7 @@ void Game::Update()
 	// Perform the subscription of events for all systems
 	registry->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
 	registry->GetSystem<KeyboardControllerSystem>().SubscribeToEvents(eventBus);
+	registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvents(eventBus);
 	
 	registry->Update();
 
