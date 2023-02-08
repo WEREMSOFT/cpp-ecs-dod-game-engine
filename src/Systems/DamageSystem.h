@@ -40,6 +40,22 @@ class DamageSystem: public System
 			}
 		}
 
+		void OnProjectileHitsEnemy(Entity projectile, Entity enemy)
+		{
+			auto projectileComponent = projectile.GetComponent<ProjectileComponent>();
+			
+			if(projectileComponent.isFriendly)
+			{
+				auto& healthComponent = enemy.GetComponent<HealthComponent>();
+				healthComponent.healthPercentage -= projectileComponent.hitPercentDamage;
+				projectile.Kill();
+				if(healthComponent.healthPercentage <= 0)
+				{
+					enemy.Kill();
+				}
+			}
+		}
+
 		void onCollision(CollisionEvent &event)
 		{
 			Entity a = event.a;
@@ -57,12 +73,12 @@ class DamageSystem: public System
 
 			if(a.BelongsToGroup("projectiles") && b.BelongsToGroup("enemies"))
 			{
-				
+				OnProjectileHitsEnemy(a, b);	
 			}
 
 			if(b.BelongsToGroup("projectiles") && a.BelongsToGroup("enemies"))
 			{
-				
+				OnProjectileHitsEnemy(b, a);
 			}
 		}
 
