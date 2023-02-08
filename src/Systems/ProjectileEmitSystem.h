@@ -29,7 +29,7 @@ class ProjectileEmitSystem: public System
 			{
 				auto& projectileEmitter = entity.GetComponent<ProjectileEmitterComponent>();
 
-				if(entity.HasComponent<CameraFollowComponent>())
+				if(entity.HasTag("player"))
 				{
 					switch(event.code)
 					{
@@ -39,7 +39,6 @@ class ProjectileEmitSystem: public System
 
 							auto projectile = entity.registry->CreateEntity();
 							projectile.AddComponent<ProjectileComponent>(projectileEmitter.isFriendly, projectileEmitter.hitPercentDamage, projectileEmitter.projectileDurationMs);
-
 							glm::vec2 velocity = {0, 0};
 							if(rigidBody.velocity.x > 0)
 							{
@@ -52,7 +51,6 @@ class ProjectileEmitSystem: public System
 								velocity.y = projectileEmitter.projectileVelocity.y;
 							}
 
-
 							auto position = transform.position;
 
 							const auto sprite = entity.GetComponent<SpriteComponent>();
@@ -60,11 +58,11 @@ class ProjectileEmitSystem: public System
 							position.y += sprite.height / 2;
 
 							projectile.AddComponent<TransformComponent>(position, glm::vec2(1.), 0);
-
 							projectile.AddComponent<RigidBodyComponent>(velocity);
 							projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
 							projectile.AddComponent<BoxColliderComponent>(4, 4);
-		
+							projectile.Group("projectiles");
+
 							projectileEmitter.lastEmissionTimeMs = SDL_GetTicks();
 
 							break;
@@ -102,7 +100,7 @@ class ProjectileEmitSystem: public System
 					projectile.AddComponent<RigidBodyComponent>(projectileEmitter.projectileVelocity);
 					projectile.AddComponent<SpriteComponent>("bullet-image", 4, 4, 4);
 					projectile.AddComponent<BoxColliderComponent>(4, 4);
-
+					projectile.Group("projectiles");
 					projectileEmitter.lastEmissionTimeMs = SDL_GetTicks();
 				}
 

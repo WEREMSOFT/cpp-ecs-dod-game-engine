@@ -173,6 +173,7 @@ void Game::LoadLevel(int level)
 			auto srcRect = SDL_Rect{(currentTile % 10) * 32, (currentTile / 10) * 32, 32, 32};
 			SDL_Rect destRect = {x * 32, y * 32, 32, 32};
 			Entity tile = registry->CreateEntity();
+			tile.Group("tiles");
 			tile.AddComponent<TransformComponent>(glm::vec2(destRect.x * scale, destRect.y * scale), glm::vec2(scale, scale));
 			tile.AddComponent<SpriteComponent>("jungle-image", 32, 32, 0, srcRect.x, srcRect.y);
 			x++;
@@ -189,9 +190,8 @@ void Game::LoadLevel(int level)
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 1000, 5000, 0, false);
+	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 1000, 5000, 10, false);
 	tank.AddComponent<HealthComponent>(100);
-
 	tank.Group("enemies");
 
 	Entity truck = registry->CreateEntity();
@@ -199,9 +199,8 @@ void Game::LoadLevel(int level)
 	truck.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
 	truck.AddComponent<SpriteComponent>("truck-image", 32, 32, 2);
 	truck.AddComponent<BoxColliderComponent>(32, 32);
-	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0, 100), 1000, 2000, 0, false);
+	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0, 100), 1000, 2000, 10, false);
 	truck.AddComponent<HealthComponent>(100);
-
 	truck.Group("enemies");
 
 	Entity chopper = registry->CreateEntity();
@@ -209,9 +208,11 @@ void Game::LoadLevel(int level)
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
 	chopper.AddComponent<AnimationComponent>(2, 7);
+	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<CameraFollowComponent>();
 	chopper.AddComponent<HealthComponent>(100);
-	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200, 200), 0, 2000, 0, true);
+	chopper.AddComponent<ProjectileEmitterComponent>(glm::vec2(200, 200), 0, 10000, 10, true);
+	chopper.Tag("player");
 	
 	{
 		int velocity = 80;
@@ -222,7 +223,6 @@ void Game::LoadLevel(int level)
 			glm::vec2(-velocity, 0));
 	}
 
-	chopper.Tag("player");
 
 	Entity radar = registry->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10), glm::vec2(1., 1.));
