@@ -32,7 +32,7 @@
 #include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
-
+#include "../Systems/RenderHealthBarSystem.h"
 
 #include "../EventBus/EventBus.h"
 #include "../Events/KeyPressedEvent.h"
@@ -160,6 +160,8 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<ProjectileEmitSystem>();
 	registry->AddSystem<ProjectileLifecycleSystem>();
 	registry->AddSystem<RenderTextSystem>();
+	registry->AddSystem<RenderHealthBarSystem>();
+
 
 	// Add assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -170,7 +172,8 @@ void Game::LoadLevel(int level)
 	assetStore->AddTexture(renderer, "bullet-image", "./assets/images/bullet.png");
 	
 	// Add fonts to the asset store
-	assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 16); 
+	assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 16);
+	assetStore->AddFont("charriot-font-small", "./assets/fonts/charriot.ttf", 10);
 
 	auto currentMap = LoadTileMap();
 
@@ -330,7 +333,7 @@ void Game::Render()
 	// Call all the systems that requires an object
 	registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
 	registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
-	
+	registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, camera);	
 	if(isDebugMode)
 		registry->GetSystem<DebugRenderSystem>().Update(renderer, camera);
 
