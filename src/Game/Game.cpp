@@ -19,6 +19,7 @@
 #include "../Components/CameraFollowComponent.h"
 #include "../Components/ProjectileEmitterComponent.h"
 #include "../Components/HealthComponent.h"
+#include "../Components/TextLabelComponent.h"
 
 #include "../Systems/MovementSystem.h"
 #include "../Systems/RenderSystem.h"
@@ -30,6 +31,8 @@
 #include "../Systems/CameraMovementSystem.h"
 #include "../Systems/ProjectileEmitSystem.h"
 #include "../Systems/ProjectileLifecycleSystem.h"
+#include "../Systems/RenderTextSystem.h"
+
 
 #include "../EventBus/EventBus.h"
 #include "../Events/KeyPressedEvent.h"
@@ -58,6 +61,12 @@ void Game::Initialize()
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
 		Logger::Err("Error initializing SDL");
+		return;
+	}
+
+	if(TTF_Init() != 0)
+	{
+		Logger::Err("Error initializing SDL TTF.");
 		return;
 	}
 
@@ -150,6 +159,7 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<CameraMovementSystem>();
 	registry->AddSystem<ProjectileEmitSystem>();
 	registry->AddSystem<ProjectileLifecycleSystem>();
+	registry->AddSystem<RenderTextSystem>();
 
 	// Add assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -157,6 +167,10 @@ void Game::LoadLevel(int level)
 	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	assetStore->AddTexture(renderer, "radar-image", "./assets/images/radar.png");
 	assetStore->AddTexture(renderer, "bullet-image", "./assets/images/bullet.png");
+	assetStore->AddTexture(renderer, "bullet-image", "./assets/images/bullet.png");
+	
+	// Add fonts to the asset store
+	assetStore->AddFont("charriot-font", "./assets/fonts/charriot.ttf", 16); 
 
 	auto currentMap = LoadTileMap();
 
@@ -206,7 +220,7 @@ void Game::LoadLevel(int level)
 	Entity chopper = registry->CreateEntity();
 	chopper.AddComponent<TransformComponent>();
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 3);
-	chopper.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
+	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.));
 	chopper.AddComponent<AnimationComponent>(2, 7);
 	chopper.AddComponent<BoxColliderComponent>(32, 32);
 	chopper.AddComponent<CameraFollowComponent>();
@@ -229,6 +243,11 @@ void Game::LoadLevel(int level)
 	radar.AddComponent<RigidBodyComponent>(glm::vec2(0., 0.));
 	radar.AddComponent<SpriteComponent>("radar-image", 64, 64, 13, 0, 0, true);
 	radar.AddComponent<AnimationComponent>(8, 15, true);
+
+	SDL_Color colorGreen = {0, 255, 0};
+
+	Entity label = registry->CreateEntity();
+	label.AddComponent<TextLabelComponent>(glm::vec2(windowWidth / 2 - 40, 10), "CHOPPER 1.0", "charriot-font", colorGreen, true);
 }
 
 void Game::Setup()
@@ -310,6 +329,7 @@ void Game::Render()
 	SDL_RenderClear(renderer);
 	// Call all the systems that requires an object
 	registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
+	registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
 	
 	if(isDebugMode)
 		registry->GetSystem<DebugRenderSystem>().Update(renderer, camera);
