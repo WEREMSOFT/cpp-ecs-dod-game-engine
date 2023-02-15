@@ -41,8 +41,8 @@ class RenderHealthBarSystem: public System
 
 				SDL_SetRenderDrawColor(renderer, renderColor.r, renderColor.g, renderColor.b, 255);
 
-				rect.x = transform.position.x;
-				rect.y = transform.position.y + 10 + sprite.height;
+				rect.x = transform.position.x - camera.x;
+				rect.y = transform.position.y - camera.y + 10 + sprite.height;
 				rect.w = health.healthPercentage / 5;
 
 				SDL_RenderFillRect(renderer, &rect);

@@ -7,6 +7,8 @@
 #include <imgui/imgui.h>
 #include <sol/sol.hpp>
 #include <string>
+#include <imgui/imgui.h>
+#include <imgui/imgui_sdl.h>
 
 #include <stdio.h>
 
@@ -76,7 +78,6 @@ void Game::Initialize()
 	windowWidth = 800;	// displayMode.w;
 	windowHeight = 600; // displayMode.h;
 
-
 	window = SDL_CreateWindow(
 		NULL,
 		SDL_WINDOWPOS_CENTERED,
@@ -97,6 +98,10 @@ void Game::Initialize()
 		Logger::Err("Error creating renderer");
 		return;
 	}
+
+	// initialize dearImgui
+	ImGui::CreateContext();
+	ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
 
 	camera = {0, 0, windowWidth, windowHeight};
 	// SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
@@ -335,13 +340,22 @@ void Game::Render()
 	registry->GetSystem<RenderTextSystem>().Update(renderer, assetStore, camera);
 	registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, camera);	
 	if(isDebugMode)
+	{
 		registry->GetSystem<DebugRenderSystem>().Update(renderer, camera);
+		ImGui::NewFrame();
+		ImGui::ShowDemoWindow();
+		ImGui::Render();
+		ImGuiSDL::Render(ImGui::GetDrawData());
+		ImGui::EndFrame();
+	}
 
 	SDL_RenderPresent(renderer);
 }
 
 void Game::Destroy()
 {
+	ImGuiSDL::Deinitialize();
+	ImGui::DestroyContext();
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
