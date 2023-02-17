@@ -9,6 +9,7 @@
 #include <string>
 #include <imgui/imgui.h>
 #include <imgui/imgui_sdl.h>
+#include <imgui/imgui_impl_sdl2.h>
 
 #include <stdio.h>
 
@@ -101,6 +102,7 @@ void Game::Initialize()
 
 	// initialize dearImgui
 	ImGui::CreateContext();
+	ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
 	ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
 
 	camera = {0, 0, windowWidth, windowHeight};
@@ -280,6 +282,18 @@ void Game::ProcessInput()
 
 	while (SDL_PollEvent(&event))
 	{
+		// Handle Imgui events
+		ImGui_ImplSDL2_ProcessEvent(&event);
+		ImGuiIO& io = ImGui::GetIO();
+
+		int mouseX, mouseY;
+
+		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+		io.MousePos = ImVec2(mouseX, mouseY);
+		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+		// Handle SDL events
 		switch (event.type)
 		{
 		case SDL_QUIT:
