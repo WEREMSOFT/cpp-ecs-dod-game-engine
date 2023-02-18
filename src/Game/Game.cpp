@@ -357,7 +357,7 @@ void Game::Render()
 	registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, camera);	
 	if(isDebugMode)
 	{
-		registry->GetSystem<RenderGuiSystem>().Update(registry);
+		registry->GetSystem<RenderGuiSystem>().Update(registry, camera);
 		registry->GetSystem<DebugRenderSystem>().Update(renderer, camera);
 	}
 
