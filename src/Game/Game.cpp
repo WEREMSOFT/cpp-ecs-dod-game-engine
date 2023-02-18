@@ -36,6 +36,7 @@
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthBarSystem.h"
+#include "../Systems/RenderGuiSystem.h"
 
 #include "../EventBus/EventBus.h"
 #include "../Events/KeyPressedEvent.h"
@@ -168,6 +169,7 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<ProjectileLifecycleSystem>();
 	registry->AddSystem<RenderTextSystem>();
 	registry->AddSystem<RenderHealthBarSystem>();
+	registry->AddSystem<RenderGuiSystem>();
 
 
 	// Add assets to the asset store
@@ -355,12 +357,8 @@ void Game::Render()
 	registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, camera);	
 	if(isDebugMode)
 	{
+		registry->GetSystem<RenderGuiSystem>().Update(registry);
 		registry->GetSystem<DebugRenderSystem>().Update(renderer, camera);
-		ImGui::NewFrame();
-		ImGui::ShowDemoWindow();
-		ImGui::Render();
-		ImGuiSDL::Render(ImGui::GetDrawData());
-		ImGui::EndFrame();
 	}
 
 	SDL_RenderPresent(renderer);
