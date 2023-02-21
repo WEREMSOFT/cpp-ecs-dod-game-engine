@@ -94,8 +94,6 @@ Entity Registry::CreateEntity()
 	entity.registry = this;
 	entitiesToBeAdded.insert(entity);
 	
-	Logger::Log("Entity created with id = " + std::to_string(entityId));
-
 	return entity;
 }
 
