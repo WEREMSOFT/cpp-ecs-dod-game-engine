@@ -171,7 +171,6 @@ void Game::LoadLevel(int level)
 	registry->AddSystem<RenderHealthBarSystem>();
 	registry->AddSystem<RenderGuiSystem>();
 
-
 	// Add assets to the asset store
 	assetStore->AddTexture(renderer, TextureIdEnum::TANK_IMAGE, "./assets/images/tank-panther-right.png");
 	assetStore->AddTexture(renderer, TextureIdEnum::TRUCK_IMAGE, "./assets/images/truck-ford-right.png");

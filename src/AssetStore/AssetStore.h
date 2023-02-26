@@ -7,22 +7,22 @@
 
 enum class TextureIdEnum
 {
-	NONE,
 	TANK_IMAGE,
 	TRUCK_IMAGE,
 	CHOPPER_IMAGE,
 	TILEMAP_IMAGE,
 	RADAR_IMAGE,
 	BULLET_IMAGE,
-	COUNT
+	COUNT,
+	NONE
 };
 
 enum class FontIdEnum
 {
-	NONE,
 	MAIN,
 	MAIN_SMALL,
-	COUNT
+	COUNT,
+	NONE
 };
 
 class AssetStore
