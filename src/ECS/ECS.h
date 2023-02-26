@@ -13,6 +13,25 @@
 const unsigned int MAX_COMPONENTS = 32;
 typedef std::bitset<MAX_COMPONENTS> Signature;
 
+enum class TagsIdEnum
+{
+	NONE,
+	ENEMIES,
+	PLAYER,
+	BULLETS,
+	COUNT
+};
+
+enum class GroupsIdEnum
+{
+	NONE,
+	ENEMIES,
+	PLAYER,
+	PROJECTILES,
+	TILES,
+	COUNT
+};
+
 struct IComponent
 {
 protected:
@@ -56,12 +75,12 @@ public:
 	class Registry* registry;
 
 	// tags
-	void Tag(const std::string& tag);
-	bool HasTag(const std::string& tag);
+	void Tag(const TagsIdEnum tag);
+	bool HasTag(const TagsIdEnum tag);
 
 	// groups
-	void Group(const std::string& group);
-	bool BelongsToGroup(const std::string& group);
+	void Group(const GroupsIdEnum group);
+	bool BelongsToGroup(const GroupsIdEnum group);
 };
 
 class System
@@ -209,11 +228,11 @@ private:
 	// list of free entities ID's
 	std::deque<int> freeIds;
 
-	std::unordered_map<std::string, Entity> entityPerTag;
-	std::unordered_map<int, std::string> tagPerEntity;
+	std::unordered_map<TagsIdEnum, Entity> entityPerTag;
+	std::unordered_map<int, TagsIdEnum> tagPerEntity;
 
-	std::unordered_map<std::string, std::set<Entity>> entitiesPerGroup;
-	std::unordered_map<int, std::string> groupPerEntity;
+	std::unordered_map<GroupsIdEnum, std::set<Entity>> entitiesPerGroup;
+	std::unordered_map<int, GroupsIdEnum> groupPerEntity;
 
 public:
 	Registry() 
@@ -248,16 +267,17 @@ public:
 	TSystem& GetSystem() const;
 
 	// Tags
-	void TagEntity(Entity entity, const std::string& tag);
-	bool EntityHasTag(Entity entity, const std::string& tag) const;
-	Entity GetEntitiesByTag(const std::string& tag) const;
+	void TagEntity(Entity entity, const TagsIdEnum tag);
+	bool EntityHasTag(Entity entity, const TagsIdEnum tag) const;
+	Entity GetEntitiesByTag(const TagsIdEnum tag) const;
 	void RemoveEntityTag(Entity entity);
 
 	// Groups
-	void GroupEntity(Entity entity, const std::string& group);
-	bool EntityBelongsToGroup(Entity entity, const std::string& group) const;
-	std::vector<Entity> GetEntitiesByGroup(const std::string& group) const;
+	void GroupEntity(Entity entity, const GroupsIdEnum group);
+	bool EntityBelongsToGroup(Entity entity, const GroupsIdEnum group) const;
+	std::vector<Entity> GetEntitiesByGroup(const GroupsIdEnum group) const;
 	void RemoveEntityGroup(Entity entity);
+
 };
 
 template <typename TSystem>

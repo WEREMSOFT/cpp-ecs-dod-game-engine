@@ -15,22 +15,22 @@ void Entity::Kill()
 	registry->KillEntity(*this);
 }
 
-void Entity::Tag(const std::string &tag)
+void Entity::Tag(const TagsIdEnum tag)
 {
 	registry->TagEntity(*this, tag);
 }
 
-bool Entity::HasTag(const std::string &tag)
+bool Entity::HasTag(const TagsIdEnum tag)
 {
 	return registry->EntityHasTag(*this, tag);
 }
 
-void Entity::Group(const std::string &group)
+void Entity::Group(const GroupsIdEnum group)
 {
 	registry->GroupEntity(*this, group);
 }
 
-bool Entity::BelongsToGroup(const std::string &group)
+bool Entity::BelongsToGroup(const GroupsIdEnum group)
 {
 	return registry->EntityBelongsToGroup(*this, group);
 }
@@ -159,13 +159,13 @@ void Registry::Update()
 	entitiesToBeRemoved.clear();
 }
 
-void Registry::TagEntity(Entity entity, const std::string &tag)
+void Registry::TagEntity(Entity entity, const TagsIdEnum tag)
 {
 	entityPerTag.emplace(tag, entity);
 	tagPerEntity.emplace(entity.GetId(), tag);
 }
 
-bool Registry::EntityHasTag(Entity entity, const std::string &tag) const
+bool Registry::EntityHasTag(Entity entity, const TagsIdEnum tag) const
 {
 	if(tagPerEntity.find(entity.GetId()) == tagPerEntity.end())
 	{
@@ -174,7 +174,7 @@ bool Registry::EntityHasTag(Entity entity, const std::string &tag) const
 	return entityPerTag.find(tag)->second == entity;
 }
 
-Entity Registry::GetEntitiesByTag(const std::string &tag) const
+Entity Registry::GetEntitiesByTag(const TagsIdEnum tag) const
 {
 	return entityPerTag.at(tag);
 }
@@ -190,14 +190,14 @@ void Registry::RemoveEntityTag(Entity entity)
 	}
 }
 
-void Registry::GroupEntity(Entity entity, const std::string &group)
+void Registry::GroupEntity(Entity entity, const GroupsIdEnum group)
 {
 	entitiesPerGroup.emplace(group, std::set<Entity>());
 	entitiesPerGroup[group].emplace(entity);
 	groupPerEntity.emplace(entity.GetId(), group);
 }
 
-bool Registry::EntityBelongsToGroup(Entity entity, const std::string &group) const
+bool Registry::EntityBelongsToGroup(Entity entity, const GroupsIdEnum group) const
 {
 	auto groupEntities = entitiesPerGroup.at(group);
 	return groupEntities.find(entity.GetId()) != groupEntities.end();

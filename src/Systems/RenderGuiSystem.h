@@ -82,7 +82,7 @@ class RenderGuiSystem: public System {
                 // Enemy creation button
                 if (ImGui::Button("Spawn new enemy")) {
                     Entity enemy = registry->CreateEntity();
-                    enemy.Group("enemies");
+                    enemy.Group(GroupsIdEnum::ENEMIES);
                     enemy.AddComponent<TransformComponent>(glm::vec2(posX, posY), glm::vec2(scaleX, scaleY), glm::degrees(rotation));
                     enemy.AddComponent<RigidBodyComponent>(glm::vec2(velX, velY));
                     enemy.AddComponent<SpriteComponent>(spritesId[selectedSpriteIndex], 32, 32, 2);

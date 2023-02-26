@@ -61,22 +61,22 @@ class DamageSystem: public System
 			Entity a = event.a;
 			Entity b = event.b;
 
-			if(a.BelongsToGroup("projectiles") && b.HasTag("player"))
+			if(a.BelongsToGroup(GroupsIdEnum::PROJECTILES) && b.HasTag(TagsIdEnum::PLAYER))
 			{
 				OnProjectileHitsPlayer(a, b);				
 			}
 
-			if(b.BelongsToGroup("projectiles") && a.HasTag("player"))
+			if(b.BelongsToGroup(GroupsIdEnum::PROJECTILES) && a.HasTag(TagsIdEnum::PLAYER))
 			{
 				OnProjectileHitsPlayer(b, a);				
 			}
 
-			if(a.BelongsToGroup("projectiles") && b.BelongsToGroup("enemies"))
+			if(a.BelongsToGroup(GroupsIdEnum::PROJECTILES) && b.BelongsToGroup(GroupsIdEnum::ENEMIES))
 			{
 				OnProjectileHitsEnemy(a, b);	
 			}
 
-			if(b.BelongsToGroup("projectiles") && a.BelongsToGroup("enemies"))
+			if(b.BelongsToGroup(GroupsIdEnum::PROJECTILES) && a.BelongsToGroup(GroupsIdEnum::ENEMIES))
 			{
 				OnProjectileHitsEnemy(b, a);
 			}

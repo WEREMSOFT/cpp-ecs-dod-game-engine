@@ -29,7 +29,7 @@ class ProjectileEmitSystem: public System
 			{
 				auto& projectileEmitter = entity.GetComponent<ProjectileEmitterComponent>();
 
-				if(entity.HasTag("player"))
+				if(entity.HasTag(TagsIdEnum::PLAYER))
 				{
 					switch(event.code)
 					{
@@ -61,7 +61,7 @@ class ProjectileEmitSystem: public System
 							projectile.AddComponent<RigidBodyComponent>(velocity);
 							projectile.AddComponent<SpriteComponent>(TextureIdEnum::BULLET_IMAGE, 4, 4, 4);
 							projectile.AddComponent<BoxColliderComponent>(4, 4);
-							projectile.Group("projectiles");
+							projectile.Group(GroupsIdEnum::PROJECTILES);
 
 							projectileEmitter.lastEmissionTimeMs = SDL_GetTicks();
 
@@ -100,7 +100,7 @@ class ProjectileEmitSystem: public System
 					projectile.AddComponent<RigidBodyComponent>(projectileEmitter.projectileVelocity);
 					projectile.AddComponent<SpriteComponent>(TextureIdEnum::BULLET_IMAGE, 4, 4, 4);
 					projectile.AddComponent<BoxColliderComponent>(4, 4);
-					projectile.Group("projectiles");
+					projectile.Group(GroupsIdEnum::PROJECTILES);
 					projectileEmitter.lastEmissionTimeMs = SDL_GetTicks();
 				}
 
