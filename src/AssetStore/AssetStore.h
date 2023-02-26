@@ -5,11 +5,31 @@
 #include <SDL2/SDL.h> 
 #include <SDL2/SDL_ttf.h>
 
+enum class TextureIdEnum
+{
+	NONE,
+	TANK_IMAGE,
+	TRUCK_IMAGE,
+	CHOPPER_IMAGE,
+	TILEMAP_IMAGE,
+	RADAR_IMAGE,
+	BULLET_IMAGE,
+	COUNT
+};
+
+enum class FontIdEnum
+{
+	NONE,
+	MAIN,
+	MAIN_SMALL,
+	COUNT
+};
+
 class AssetStore
 {
 	private:
-		std::map<std::string, SDL_Texture*> textures;
-		std::map<std::string, TTF_Font*> fonts;
+		SDL_Texture* textures[(unsigned int)TextureIdEnum::COUNT];
+		TTF_Font* fonts[(unsigned int)FontIdEnum::COUNT];
 
 	public:
 		AssetStore();
@@ -17,9 +37,9 @@ class AssetStore
 
 		void ClearAssets();
 
-		void AddTexture(SDL_Renderer* renderer, const std::string& assetId, const std::string& filePath);
-		SDL_Texture* GetTexture(const std::string& asstId);
+		void AddTexture(SDL_Renderer* renderer, TextureIdEnum assetId, const std::string& filePath);
+		SDL_Texture* GetTexture(const TextureIdEnum asstId);
 
-		void AddFont(const std::string& assetId, const std::string& filePath, int fontSize);
-		TTF_Font* GetFont(const std::string& assetId);
+		void AddFont(const FontIdEnum assetId, const std::string& filePath, int fontSize);
+		TTF_Font* GetFont(const FontIdEnum assetId);
 };

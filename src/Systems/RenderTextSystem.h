@@ -20,7 +20,7 @@ class RenderTextSystem: public System
 				const auto textLabel = entity.GetComponent<TextLabelComponent>();
 
 				SDL_Surface* surface = TTF_RenderText_Blended(
-					assetStore->GetFont(textLabel.assetId), 
+					assetStore->GetFont(textLabel.assetId),
 					textLabel.text.c_str(), 
 					textLabel.color);
 

@@ -12,12 +12,12 @@ struct SpriteComponent
 	int zIndex;
 	bool isFixed;
 
-	std::string assetId;
+	TextureIdEnum assetId;
 	SDL_Rect srcRect;
 
 	ObjectNames name = SPRITE_COMPONENT;
 
-	SpriteComponent(const std::string assetId = "", int with = 10, int height = 10, int zIndex = 0, int srcRectX = 0, int srcRectY = 0, bool isFixed = false)
+	SpriteComponent(const TextureIdEnum assetId = TextureIdEnum::NONE, int with = 10, int height = 10, int zIndex = 0, int srcRectX = 0, int srcRectY = 0, bool isFixed = false)
 	{
 		this->zIndex = zIndex;
 		this->width = with;

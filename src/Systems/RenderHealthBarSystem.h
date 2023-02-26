@@ -52,7 +52,7 @@ class RenderHealthBarSystem: public System
 				auto healthPercentageString = std::to_string(health.healthPercentage) + "%";
 
 				SDL_Surface* surface = TTF_RenderText_Blended(
-					assetStore->GetFont("charriot-font-small"), 
+					assetStore->GetFont(FontIdEnum::MAIN), 
 					healthPercentageString.c_str(),
 					renderColor);
 
