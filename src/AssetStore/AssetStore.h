@@ -13,6 +13,7 @@ enum class TextureIdEnum
 	TILEMAP_IMAGE,
 	RADAR_IMAGE,
 	BULLET_IMAGE,
+	TREE_IMAGE,
 	COUNT,
 	NONE
 };

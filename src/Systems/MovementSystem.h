@@ -5,6 +5,7 @@
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Events/CollisionEvent.h"
 
 class MovementSystem : public System
 {
@@ -15,6 +16,17 @@ public:
 		RequireComponent<TransformComponent>();
 		RequireComponent<RigidBodyComponent>();
 	}
+
+	void onCollision(CollisionEvent &event)
+	{
+
+	}
+
+	void SubscribeToEvents(std::unique_ptr<EventBus>& eventBus)
+	{
+		eventBus->SubscribeToEvent<CollisionEvent>(this, &MovementSystem::onCollision);
+	}
+
 
 	void Update(double deltaTime)
 	{

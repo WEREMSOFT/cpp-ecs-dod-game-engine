@@ -177,6 +177,7 @@ void Game::LoadLevel(int level)
 	assetStore->AddTexture(renderer, TextureIdEnum::CHOPPER_IMAGE, "./assets/images/chopper-spritesheet.png");
 	assetStore->AddTexture(renderer, TextureIdEnum::RADAR_IMAGE, "./assets/images/radar.png");
 	assetStore->AddTexture(renderer, TextureIdEnum::BULLET_IMAGE, "./assets/images/bullet.png");
+	assetStore->AddTexture(renderer, TextureIdEnum::TREE_IMAGE, "./assets/images/tree.png");
 	
 	// Add fonts to the asset store
 	assetStore->AddFont(FontIdEnum::MAIN, "./assets/fonts/charriot.ttf", 16);
@@ -210,11 +211,11 @@ void Game::LoadLevel(int level)
 
 	millisecondsPreviousFrame = SDL_GetTicks();
 	Entity tank = registry->CreateEntity();
-	tank.AddComponent<TransformComponent>(glm::vec2(134., 500.), glm::vec2(1., 1.), 0.);
-	tank.AddComponent<RigidBodyComponent>(glm::vec2(10., 0.));
+	tank.AddComponent<TransformComponent>(glm::vec2(500., 500.), glm::vec2(1., 1.), 0.);
+	tank.AddComponent<RigidBodyComponent>(glm::vec2(20., 0.));
 	tank.AddComponent<SpriteComponent>(TextureIdEnum::TANK_IMAGE, 32, 32, 1);
 	tank.AddComponent<BoxColliderComponent>(32, 32);
-	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 1000, 5000, 10, false);
+	// tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100, 0), 1000, 5000, 10, false);
 	tank.AddComponent<HealthComponent>(100);
 	tank.Group(GroupsIdEnum::ENEMIES);
 
@@ -226,6 +227,20 @@ void Game::LoadLevel(int level)
 	truck.AddComponent<ProjectileEmitterComponent>(glm::vec2(0, 100), 1000, 2000, 10, false);
 	truck.AddComponent<HealthComponent>(100);
 	truck.Group(GroupsIdEnum::ENEMIES);
+
+	// TreeA
+	Entity treeA = registry->CreateEntity();
+	treeA.AddComponent<TransformComponent>(glm::vec2(600., 495.), glm::vec2(1., 1.), 0.);
+	treeA.AddComponent<SpriteComponent>(TextureIdEnum::TREE_IMAGE, 16, 32, 2);
+	treeA.AddComponent<BoxColliderComponent>(16, 32);
+	treeA.Group(GroupsIdEnum::OBSTACLES);
+
+	// TreeB
+	Entity treeB = registry->CreateEntity();
+	treeB.AddComponent<TransformComponent>(glm::vec2(400., 495.), glm::vec2(1., 1.), 0.);
+	treeB.AddComponent<SpriteComponent>(TextureIdEnum::TREE_IMAGE, 16, 32, 2);
+	treeB.AddComponent<BoxColliderComponent>(16, 32);
+	treeB.Group(GroupsIdEnum::OBSTACLES);
 
 	Entity chopper = registry->CreateEntity();
 	chopper.AddComponent<TransformComponent>(glm::vec2(240., 111.), glm::vec2(1., 1.), 0.);
@@ -331,6 +346,7 @@ void Game::Update()
 	eventBus->Reset();
 
 	// Perform the subscription of events for all systems
+	registry->GetSystem<MovementSystem>().SubscribeToEvents(eventBus);
 	registry->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
 	registry->GetSystem<KeyboardControllerSystem>().SubscribeToEvents(eventBus);
 	registry->GetSystem<ProjectileEmitSystem>().SubscribeToEvents(eventBus);

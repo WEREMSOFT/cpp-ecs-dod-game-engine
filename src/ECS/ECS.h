@@ -24,12 +24,13 @@ enum class TagsIdEnum
 
 enum class GroupsIdEnum
 {
-	NONE,
+	OBSTACLES,
 	ENEMIES,
 	PLAYER,
 	PROJECTILES,
 	TILES,
-	COUNT
+	COUNT,
+	NONE
 };
 
 struct IComponent
