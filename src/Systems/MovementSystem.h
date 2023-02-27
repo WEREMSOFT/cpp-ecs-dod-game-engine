@@ -19,7 +19,28 @@ public:
 
 	void onCollision(CollisionEvent &event)
 	{
+		Entity a = event.a;
+		Entity b = event.b;
 
+		if(a.BelongsToGroup(GroupsIdEnum::ENEMIES) && b.BelongsToGroup(GroupsIdEnum::OBSTACLES))
+		{
+			OnEnemyHitObstacle(a, b);
+		}
+
+		if(b.BelongsToGroup(GroupsIdEnum::ENEMIES) && a.BelongsToGroup(GroupsIdEnum::OBSTACLES))
+		{
+			OnEnemyHitObstacle(b, a);
+		}
+
+	}
+
+	void OnEnemyHitObstacle(Entity enemy, Entity obstacle)
+	{
+		if(enemy.HasComponent<RigidBodyComponent>())
+		{
+			auto &rigidBodyComponent = enemy.GetComponent<RigidBodyComponent>();
+			rigidBodyComponent.velocity.x *= -1;
+		}
 	}
 
 	void SubscribeToEvents(std::unique_ptr<EventBus>& eventBus)
