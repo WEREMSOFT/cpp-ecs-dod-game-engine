@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -74,6 +75,13 @@ public:
 
 			if(isEntityOutsideMap && !entity.HasTag(TagsIdEnum::PLAYER))
 				entity.Kill();
+
+			if(entity.HasTag(TagsIdEnum::PLAYER))
+			{
+				const auto boxCollider = entity.GetComponent<BoxColliderComponent>();
+				transform.position.x = fminf(Game::mapWidth - boxCollider.with, fmaxf(0., transform.position.x));
+				transform.position.y = fminf(Game::mapHeight - boxCollider.height, fmaxf(0., transform.position.y));
+			}
 		}
 
 	}
