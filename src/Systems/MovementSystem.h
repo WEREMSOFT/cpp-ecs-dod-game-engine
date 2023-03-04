@@ -5,6 +5,7 @@
 #include "../ECS/ECS.h"
 #include "../Components/TransformComponent.h"
 #include "../Components/RigidBodyComponent.h"
+#include "../Components/SpriteComponent.h"
 #include "../Events/CollisionEvent.h"
 
 class MovementSystem : public System
@@ -36,10 +37,15 @@ public:
 
 	void OnEnemyHitObstacle(Entity enemy, Entity obstacle)
 	{
-		if(enemy.HasComponent<RigidBodyComponent>())
+		if(enemy.HasComponent<RigidBodyComponent>() && enemy.HasComponent<SpriteComponent>())
 		{
 			auto &rigidBodyComponent = enemy.GetComponent<RigidBodyComponent>();
+			auto &spriteComponent = enemy.GetComponent<SpriteComponent>();
 			rigidBodyComponent.velocity.x *= -1;
+			if(rigidBodyComponent.velocity.x > 0)
+				spriteComponent.flip = SDL_FLIP_NONE;
+			else
+				spriteComponent.flip = SDL_FLIP_HORIZONTAL;
 		}
 	}
 
@@ -47,7 +53,6 @@ public:
 	{
 		eventBus->SubscribeToEvent<CollisionEvent>(this, &MovementSystem::onCollision);
 	}
-
 
 	void Update(double deltaTime)
 	{

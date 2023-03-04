@@ -14,6 +14,7 @@ struct SpriteComponent
 
 	TextureIdEnum assetId;
 	SDL_Rect srcRect;
+	SDL_RendererFlip flip;
 
 	ObjectNames name = SPRITE_COMPONENT;
 
@@ -25,5 +26,6 @@ struct SpriteComponent
 		this->assetId = assetId;
 		this->srcRect = {srcRectX, srcRectY, with, height};
 		this->isFixed = isFixed;
+		this->flip = SDL_FLIP_NONE;
 	}
 };

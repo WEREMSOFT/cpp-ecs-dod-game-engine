@@ -61,7 +61,7 @@ public:
 				static_cast<int>(spriteComponent.width * transformComponent.scale.x),
 				static_cast<int>(spriteComponent.height * transformComponent.scale.y)};
 
-			SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, transformComponent.rotation, NULL, SDL_FLIP_NONE);
+			SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect, transformComponent.rotation, NULL, spriteComponent.flip);
 		}
 	}
 };
