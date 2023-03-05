@@ -37,6 +37,14 @@ public:
 				entity.GetComponent<SpriteComponent>()
 			};
 
+			bool isOutsideCameraView = 
+				re.transformComponent.position.x < camera.x - (re.spriteComponent.width * re.transformComponent.scale.x) ||
+				re.transformComponent.position.x > camera.x + camera.w ||
+				re.transformComponent.position.y < camera.y - (re.spriteComponent.height * re.transformComponent.scale.y) ||
+				re.transformComponent.position.y > camera.y + camera.h;
+
+			if(isOutsideCameraView && !re.spriteComponent.isFixed) continue;
+
 			renderableEntities.emplace_back(re);
 		}
 
