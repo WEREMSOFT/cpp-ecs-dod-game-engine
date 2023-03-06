@@ -3,7 +3,7 @@ INCLUDE_PATH = -I"./libs"
 CC = g++
 LANG_STD = -std=c++17
 SRC_FILES = src/*.cpp src/Logger/*.cpp src/Game/*.cpp src/ECS/*.cpp src/AssetStore/*.cpp ./libs/imgui/*.cpp
-LINKER_FLAGS = -lSDL2 -llua5.3 -lSDL2_ttf -lSDL2_mixer -lSDL2_image
+LINKER_FLAGS = -lSDL2 -llua5.3 -lSDL2_ttf -lSDL2_mixer -lSDL2_image -llua5.3
 TARGET = bin/Main.bin
 build:
 	$(CC) $(COMPILER_FLAGS) $(INCLUDE_PATH) $(LANG_STD) $(SRC_FILES) $(LINKER_FLAGS) -o $(TARGET)
